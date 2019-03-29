@@ -1,0 +1,27 @@
+﻿@page "/Article/{Id:int}/{Url}"
+@using RazorComponentsBlog.Models;
+@using Microsoft.AspNetCore.Components.Services;
+@inject IUriHelper UriHelper
+
+<h1>@article.Title</h1>
+<p>@article.Text</p>
+
+@functions {
+
+    [Parameter]
+    private int Id { get; set; }
+
+    [Parameter]
+    private string Url { get; set; }
+
+    Article article = new Article { Id = 1, Title = "Titulek článku", Text = "Text článku", Url = "titulek-clanku", UserId = 1 };
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (article.Id != Id || !article.Url.Equals(Url))
+        {
+            UriHelper.NavigateTo("/page-not-found");
+        }
+    }
+}

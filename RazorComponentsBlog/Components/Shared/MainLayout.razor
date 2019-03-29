@@ -1,15 +1,16 @@
 ﻿@inherits LayoutComponentBase
-
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
-    <div class="top-row px-4">
-        <a href="https://docs.microsoft.com/en-us/aspnet/" target="_blank" class="ml-md-auto">About</a>
+<header>
+    <TopMenu />
+</header>
+<section class="introduction container-fluid">
+    <p>Nejaky obrazek a dalsi veci</p>
+</section>
+<section class="articles container">
+    <p>Seznam clanku</p>
+    @Body
+</section>
+<footer>
+    <div class="container">
+        <p>Paticka</p>
     </div>
-
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+</footer>
