@@ -1,5 +1,41 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@page "/admin/article/new"
+
+@using System.IO;
+@using Blazor.FileReader;
+@using Microsoft.AspNetCore.Hosting;
+
+@inject IWebHostEnvironment env;
+@inject IFileReaderService fileReaderService;
+
+<input type="file" ref="fileInput" accept="image/*" />
+<button onclick="@ReadFile">Nahrát fotku</button>
+<textarea style="max-width: 100%;" cols="50" rows="20">@Output</textarea>
+
+@functions {
+    ElementRef fileInput;
+
+    string Output { get; set; }
+
+    public async Task ReadFile()
+    {
+
+        Output = string.Empty;
+        this.StateHasChanged();
+        var nl = Environment.NewLine;
+        foreach (var file in await fileReaderService.CreateReference(fileInput).EnumerateFilesAsync())
+        {
+            var fileInfo = await file.ReadFileInfoAsync();
+            var uploadPath = Path.Combine(env.ContentRootPath, "uploads/images", fileInfo.Name);
+
+            using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
+            {
+
+                await memoryStream.CopyToAsync(new FileStream(uploadPath, FileMode.Create));
+            }
+
+            Output += $"Soubor nahran...";
+            this.StateHasChanged();
+        }
+
+    }
 }
