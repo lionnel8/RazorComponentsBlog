@@ -1,10 +1,15 @@
 ﻿@page "/article/{id:int}/{url}"
-@using RazorComponentsBlog.Models;
-@using Microsoft.AspNetCore.Components.Services;
+@using RazorComponentsBlog.Models
+@using Microsoft.AspNetCore.Components.Services
+@using RazorComponentsBlog.Services
 @inject IUriHelper UriHelper
+@inject ArticleService ArticleService
 
-<h1>@article.Title</h1>
-<p>@article.Text</p>
+@if (article != null)
+{
+    <h1>@article.Title</h1>
+    <p>@article.Text</p>
+}
 
 @functions {
 
@@ -14,14 +19,19 @@
     [Parameter]
     private string Url { get; set; }
 
-    Article article = new Article { Id = 1, Title = "Titulek článku", Text = "Text článku", Url = "titulek-clanku", UserId = 1 };
+    Article article;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
-        if (article.Id != Id || !article.Url.Equals(Url))
+        await base.OnParametersSetAsync();
+        article = await ArticleService.GetArticleDetail(Id, Url);
+
+        if (article == null)
         {
             UriHelper.NavigateTo("/page-not-found");
         }
+
     }
+
+
 }

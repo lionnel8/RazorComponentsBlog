@@ -28,6 +28,7 @@ namespace RazorComponentsBlog
             services.AddRazorComponents();
 
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<ArticleService>();
             services.AddScoped<IFileReaderService, FileReaderService>();
             services.AddDirectoryBrowser();
         }

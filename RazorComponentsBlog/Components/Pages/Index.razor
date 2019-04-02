@@ -1,5 +1,31 @@
 ﻿@page "/"
+@using RazorComponentsBlog.Models
+@using RazorComponentsBlog.Services
+@inject ArticleService ArticleService
 
-<h1>Hello, world!</h1>
+<h1>Razor Components Blog!</h1>
 
-Welcome to your new app.
+@if (!articles.Any())
+{
+    <p>Načítání článků</p>
+}
+else
+{
+    @foreach(var article in articles)
+    {
+        <div>
+            <h2>@article.Title</h2>
+            <p>@article.Text</p>
+        </div>
+    }
+}
+
+@functions {
+
+    List<Article> articles;
+
+    protected override async Task OnInitAsync()
+    {
+        articles = await ArticleService.GetArticleList();
+    }
+}
