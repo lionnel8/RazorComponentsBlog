@@ -8,15 +8,17 @@ namespace RazorComponentsBlog.Services
 {
     public class ArticleService
     {
+        private static string Title = "Sed convallis magna eu sem";
+        private static string Text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean fermentum risus id tortor. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Mauris dictum facilisis augue. In rutrum. Vivamus luctus egestas leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque sapien. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.";
         private static User User = new User { UserId = 1, FirstName = "Václav", LastName = "Novák", Email = "vaclav@novak.com" };
         private static readonly List<Article> Articles = new List<Article>()
         {
-            new Article{ ArticleId=1, Created=new DateTime(), Title="Nadpis článku 1", Text="Text článku 1", Url="nadpis-clanku-1", User=User},
-            new Article{ ArticleId=2, Created=new DateTime(), Title="Nadpis článku 2", Text="Text článku 2", Url="nadpis-clanku-2", User=User},
-            new Article{ ArticleId=3, Created=new DateTime(), Title="Nadpis článku 3", Text="Text článku 3", Url="nadpis-clanku-3", User=User},
-            new Article{ ArticleId=4, Created=new DateTime(), Title="Nadpis článku 4", Text="Text článku 4", Url="nadpis-clanku-4", User=User},
-            new Article{ ArticleId=5, Created=new DateTime(), Title="Nadpis článku 5", Text="Text článku 5", Url="nadpis-clanku-5", User=User},
-            new Article{ ArticleId=6, Created=new DateTime(), Title="Nadpis článku 6", Text="Text článku 6", Url="nadpis-clanku-6", User=User},
+            new Article{ ArticleId=1, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-1", User=User},
+            new Article{ ArticleId=2, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-2", User=User},
+            new Article{ ArticleId=3, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-3", User=User},
+            new Article{ ArticleId=4, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-4", User=User},
+            new Article{ ArticleId=5, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-5", User=User},
+            new Article{ ArticleId=6, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-6", User=User},
         };
 
         public Task<List<Article>> GetArticleList()

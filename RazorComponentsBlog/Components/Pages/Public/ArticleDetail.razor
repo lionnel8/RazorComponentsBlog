@@ -5,10 +5,27 @@
 @inject IUriHelper UriHelper
 @inject ArticleService ArticleService
 
+
+
 @if (article != null)
 {
-    <h1>@article.Title</h1>
-    <p>@article.Text</p>
+    <div>
+        <TopFrame TopFrameClass="page-no-index" Title="@article.Title">
+            <p>@article.Created.ToString("dd. MM. yyyy")</p>
+        </TopFrame>
+    </div>
+    <div class="container rcb-container" id="articleDetailContent">
+        <div class="row">
+            <div class="col-12">
+                <div class="article-detail__image-box">
+                    <img src="https://placeimg.com/1000/500/arch" class="img-fluid mb-5" />
+                </div>
+                <div class="article-detail__article-text">
+                    @article.Text
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @functions {
@@ -35,3 +52,4 @@
 
 
 }
+

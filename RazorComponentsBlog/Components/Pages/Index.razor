@@ -3,22 +3,34 @@
 @using RazorComponentsBlog.Services
 @inject ArticleService ArticleService
 
-<h1>Razor Components Blog!</h1>
+<div class="mb-5">
+    <TopFrame TopFrameClass="page-index" Title="Razor Components Blog">
+        <p class="lead mt-4">Blog o ASP.NET Core Razor Components a Blazoru</p>
+    </TopFrame>
+</div>
 
-@if (!articles.Any())
-{
-    <p>Načítání článků</p>
-}
-else
-{
-    @foreach(var article in articles)
-    {
-        <div>
-            <h2>@article.Title</h2>
-            <p>@article.Text</p>
-        </div>
-    }
-}
+<div class="container rcb-container">
+    <div class="row">
+        @if (!articles.Any())
+        {
+            <p>Načítání článků</p>
+        }
+        else
+        {
+            @foreach (var article in articles)
+            {
+                <ArticleCard ArticleId="@article.ArticleId"
+                             Title="@article.Title"
+                             Text="@article.Text"
+                             Created="@article.Created"
+                             Url="@article.Url"
+                             IsFirst="@(articles.First() == article)"
+                             IsLast="@(articles.Last() == article)">
+                </ArticleCard>
+            }
+        }
+    </div>
+</div>
 
 @functions {
 

@@ -1,0 +1,17 @@
+﻿<div class="container-fluid shadow-soft @TopFrameClass" id="topFrame">
+    <div class="container text-center text-white" id="topFrameContentContainer">
+        <h1 class="mb-1">@Title</h1>
+        <div>@ChildContent</div>
+    </div>
+</div>
+
+@functions {
+    [Parameter]
+    private string Title { get; set; }
+
+    [Parameter]
+    private RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    private string TopFrameClass { get; set; }
+}

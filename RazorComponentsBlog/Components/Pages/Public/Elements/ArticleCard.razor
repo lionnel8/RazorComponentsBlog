@@ -1,0 +1,69 @@
+﻿<div class="@(isLarge ? "col-12" : "col-12 col-md-6")">
+    <div class="article-card shadow-soft mb-5 bg-white rounded @(isLarge ? "article-card--large" : "article-card--small")">
+        <a class="d-block" href="@("article/" + ArticleId + "/" + Url)">
+            <div class="row">
+                <div class="@DetermineInnerColumnsClass(isLarge)">
+                    <div class="article-card-image-box position-relative h-100">
+                        <img src="https://placeimg.com/640/480/arch" class="position-absolute w-100 h-100 rounded" alt="@Title" />
+                    </div>
+                </div>
+                <div class="@DetermineInnerColumnsClass(isLarge)">
+                    <div class="p-3">
+                        <h2 class="h4 mt-3 mb-1">@Title</h2>
+                        <p class="article-card__article-date text-dark mb-4">@Created.ToString("dd. MM. yyyy")</p>
+                        <p class="article-card__article-preview-text">@Text</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+@functions {
+
+    [Parameter]
+    private int ArticleId { get; set; }
+
+    [Parameter]
+    private string Title { get; set; }
+
+    [Parameter]
+    private string Text { get; set; }
+
+    [Parameter]
+    private DateTime Created { get; set; }
+
+    [Parameter]
+    private string Url { get; set; }
+
+    [Parameter]
+    private bool IsFirst { get; set; }
+
+    [Parameter]
+    private bool IsLast { get; set; }
+
+    private bool isLarge;
+
+    private static Random random = new Random();
+    public static string RandomString(int length)
+    {
+        const string chars = "abcd ";
+        return new string(Enumerable.Repeat(chars, length)
+          .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Text = Text.Substring(0, Math.Min(Text.Length, 300));
+        isLarge = IsFirst || IsLast ? true : false;
+    }
+
+    private string DetermineInnerColumnsClass(bool isLarge)
+    {
+        return isLarge ? "col-12 col-md-6" : "col-12";
+    }
+
+
+
+}
