@@ -3,39 +3,100 @@
 @using System.IO;
 @using Blazor.FileReader;
 @using Microsoft.AspNetCore.Hosting;
+@using SixLabors.ImageSharp;
+@using SixLabors.ImageSharp.Processing;
+@using SixLabors.ImageSharp.PixelFormats;
 
 @inject IWebHostEnvironment env;
 @inject IFileReaderService fileReaderService;
+@inject IJSRuntime JSRuntime
 
-<input type="file" ref="fileInput" accept="image/*" />
-<button onclick="@ReadFile">Nahrát fotku</button>
-<textarea style="max-width: 100%;" cols="50" rows="20">@Output</textarea>
+<div class="container rcb-container">
+    <div class="row">
+        <div class="col-12">
+            <input type="file" ref="FileInput" accept="image/*" />
+            <button onclick="@ReadFile">Nahrát fotku</button>
+            <textarea style="max-width: 100%;" cols="50" rows="20"><p><strong>fdasfsafdas</strong></p></textarea>
+
+            <div>
+                <p>Obrázek</p>
+                @if (FileName != null)
+                {
+                    <span>good</span>
+                    <img src=@("uploads/images/" + FileName) />
+                }
+            </div>
+
+            <div>
+                <span onclick="">Save</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @functions {
-    ElementRef fileInput;
+    ElementRef FileInput;
 
-    string Output { get; set; }
+    public string Output { get; set; }
+
+    public string FileName { get; set; }
+
+    public string EditorContent { get; set; }
+
+    protected override void OnAfterRender()
+    {
+        base.OnAfterRender();
+        JSRuntime.InvokeAsync<object>("tinymceInterop.init");
+        //JSRuntime.InvokeAsync
+    }
+
+    public async void Save()
+    {
+        EditorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent");
+    }
 
     public async Task ReadFile()
     {
 
         Output = string.Empty;
+        Output += $"Upload...";
         this.StateHasChanged();
         var nl = Environment.NewLine;
-        foreach (var file in await fileReaderService.CreateReference(fileInput).EnumerateFilesAsync())
+        foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
         {
             var fileInfo = await file.ReadFileInfoAsync();
-            var uploadPath = Path.Combine(env.ContentRootPath, "uploads/images", fileInfo.Name);
+            FileName = MakeValidFileName(fileInfo.Name);
+            var uploadPath = Path.Combine(env.WebRootPath, "uploads/images", FileName);
 
             using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
+            using (Image<Rgba32> image = Image.Load(memoryStream))
             {
 
-                await memoryStream.CopyToAsync(new FileStream(uploadPath, FileMode.Create));
+                if (image.Width > 1000)
+                {
+                    image.Mutate(i => i.Resize(1000, 0));
+                }
+
+                if (image.Height > 1000)
+                {
+                    image.Mutate(i => i.Resize(0, 1000));
+                }
+                image.Save(uploadPath);
             }
 
             Output += $"Soubor nahran...";
             this.StateHasChanged();
         }
 
+    }
+
+    private static string MakeValidFileName(string name)
+    {
+        string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+        string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+        return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
     }
 }

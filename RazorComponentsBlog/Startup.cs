@@ -49,14 +49,6 @@ namespace RazorComponentsBlog
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseFileServer(new FileServerOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
-                RequestPath = "/uploads",
-                EnableDirectoryBrowsing = true
-            });
-
             app.UseRouting(routes =>
             {
                 routes.MapRazorPages();

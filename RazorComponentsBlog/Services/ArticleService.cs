@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RazorComponentsBlog.Models;
+using Gobln.Pager;
 
 namespace RazorComponentsBlog.Services
 {
@@ -19,11 +20,18 @@ namespace RazorComponentsBlog.Services
             new Article{ ArticleId=4, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-4", User=User},
             new Article{ ArticleId=5, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-5", User=User},
             new Article{ ArticleId=6, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-6", User=User},
+            new Article{ ArticleId=7, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-7", User=User},
+            new Article{ ArticleId=8, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-8", User=User},
+            new Article{ ArticleId=9, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-9", User=User},
+            new Article{ ArticleId=10, Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-10", User=User},
         };
 
         public Task<List<Article>> GetArticleList()
         {
-            return Task.FromResult(Articles);
+            var pageList = Articles.ToPagedList();
+            var page = pageList.ToPage(2, 6);
+            
+            return Task.FromResult(page.ToList());
         }
 
         public Task<Article> GetArticleDetail(int id, string url)
