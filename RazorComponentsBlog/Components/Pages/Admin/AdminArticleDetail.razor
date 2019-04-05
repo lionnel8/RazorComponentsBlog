@@ -28,6 +28,13 @@
                     <label class="custom-file-label" for="imageFileInput">Soubor</label>
                 </div>
 
+                @if (imageThumbnailGenerating)
+                {
+                    <div class="text-center">
+                        <p>Probíhá generování náhledu obrázku...</p>
+                    </div>
+                }
+
                 @if (imageBase64 != null)
                 {
                     <div class="text-center">
@@ -72,6 +79,8 @@
 
     private string imageBase64;
 
+    private bool imageThumbnailGenerating = false;
+
     protected override void OnAfterRender()
     {
         base.OnAfterRender();
@@ -91,6 +100,7 @@
 
     public async Task GenerateImageThumbnail()
     {
+        imageThumbnailGenerating = true;
         foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
         {
             using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
@@ -106,17 +116,13 @@
                     image.Mutate(i => i.Resize(0, 800));
                 }
                 imageBase64 = image.ToBase64String(JpegFormat.Instance);
+                imageThumbnailGenerating = false;
             }
-            this.StateHasChanged();
         }
     }
 
     public async Task ReadFile()
     {
-
-        Output = string.Empty;
-        Output += $"Upload...";
-        this.StateHasChanged();
         foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
         {
             var fileInfo = await file.ReadFileInfoAsync();
@@ -137,9 +143,6 @@
                 }
                 image.Save(uploadPath);
             }
-
-            Output += $"Soubor nahran...";
-            this.StateHasChanged();
         }
 
     }
