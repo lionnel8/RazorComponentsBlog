@@ -1,25 +1,49 @@
 ﻿@page "/admin/article/new"
 
-@using System.IO;
-@using Blazor.FileReader;
-@using Microsoft.AspNetCore.Hosting;
-@using SixLabors.ImageSharp;
-@using SixLabors.ImageSharp.Processing;
-@using SixLabors.ImageSharp.PixelFormats;
+@using System.IO
+@using Blazor.FileReader
+@using Microsoft.AspNetCore.Hosting
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Processing
+@using SixLabors.ImageSharp.PixelFormats
+@using SixLabors.ImageSharp.Formats.Jpeg
 
 @inject IWebHostEnvironment env;
 @inject IFileReaderService fileReaderService;
 @inject IJSRuntime JSRuntime
+@inject Sotsera.Blazor.Toaster.IToaster toaster
 
 <div class="container rcb-container">
     <div class="row">
         <div class="col-12">
-            <input type="file" ref="FileInput" accept="image/*" />
-            <button onclick="@ReadFile">Nahrát fotku</button>
-            <textarea style="max-width: 100%;" cols="50" rows="20"><p><strong>fdasfsafdas</strong></p></textarea>
+            <h1 class="text-center mt-5 mb-5">Nový článek</h1>
+            <div class="form-group mb-5">
+                <label for="articleTitleInput" class="h4">Titulek článku</label>
+                <input type="text" class="form-control" id="articleTitleInput" placeholder="Titulek článku" />
+            </div>
+            <div class="form-group mb-5">
+                <label class="h4">Úvodní obrázek</label>
+                <div class="custom-file">
+                    <input type="file" ref="FileInput" accept="image/*" class="custom-file-input" id="imageFileInput" onchange="@GenerateImageThumbnail" />
+                    <label class="custom-file-label" for="imageFileInput">Soubor</label>
+                </div>
 
+                @if (imageBase64 != null)
+                {
+                    <div class="text-center">
+                        <img src=@imageBase64 class="img-fluid">
+                    </div>
+                }
+
+            </div>
+            <div class="form-group mb-5">
+                <label class="h4">Text článku</label>
+                <textarea><p><strong>fdasfsafdas</strong></p></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" onclick="@Save">Uložit článek</button>
+            </div>
             <div>
-                <p>Obrázek</p>
                 @if (FileName != null)
                 {
                     <span>good</span>
@@ -27,9 +51,10 @@
                 }
             </div>
 
-            <div>
-                <span onclick="">Save</span>
-            </div>
+            @if (EditorContent != null)
+            {
+                <div>@((MarkupString)EditorContent)</div>
+            }
         </div>
     </div>
 </div>
@@ -45,6 +70,8 @@
 
     public string EditorContent { get; set; }
 
+    private string imageBase64;
+
     protected override void OnAfterRender()
     {
         base.OnAfterRender();
@@ -54,7 +81,34 @@
 
     public async void Save()
     {
+        //JSRuntime.InvokeAsync<string>("busyloadInterop.show");
         EditorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent");
+        this.StateHasChanged();
+        await JSRuntime.InvokeAsync<string>("tinymceInterop.highlightCode");
+        toaster.Success("Článek byl uložen");
+        //JSRuntime.InvokeAsync<string>("busyloadInterop.hide");
+    }
+
+    public async Task GenerateImageThumbnail()
+    {
+        foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
+        {
+            using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
+            using (Image<Rgba32> image = Image.Load(memoryStream))
+            {
+                if (image.Width > 800)
+                {
+                    image.Mutate(i => i.Resize(800, 0));
+                }
+
+                if (image.Height > 800)
+                {
+                    image.Mutate(i => i.Resize(0, 800));
+                }
+                imageBase64 = image.ToBase64String(JpegFormat.Instance);
+            }
+            this.StateHasChanged();
+        }
     }
 
     public async Task ReadFile()
@@ -63,7 +117,6 @@
         Output = string.Empty;
         Output += $"Upload...";
         this.StateHasChanged();
-        var nl = Environment.NewLine;
         foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
         {
             var fileInfo = await file.ReadFileInfoAsync();
@@ -73,7 +126,6 @@
             using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
             using (Image<Rgba32> image = Image.Load(memoryStream))
             {
-
                 if (image.Width > 1000)
                 {
                     image.Mutate(i => i.Resize(1000, 0));

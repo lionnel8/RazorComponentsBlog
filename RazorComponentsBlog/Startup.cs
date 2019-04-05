@@ -13,6 +13,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using RazorComponentsBlog.Components;
 using RazorComponentsBlog.Services;
+using Sotsera.Blazor.Toaster.Core.Models;
 
 namespace RazorComponentsBlog
 {
@@ -24,13 +25,18 @@ namespace RazorComponentsBlog
         {
             services.AddMvc()
                 .AddNewtonsoftJson();
-
             services.AddRazorComponents();
-
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<ArticleService>();
             services.AddScoped<IFileReaderService, FileReaderService>();
             services.AddDirectoryBrowser();
+            services.AddToaster(config =>
+            {
+                config.PositionClass = Defaults.Classes.Position.TopRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.MaximumOpacity = 95;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

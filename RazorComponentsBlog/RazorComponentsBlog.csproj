@@ -21,6 +21,7 @@
   <ItemGroup>
     <Folder Include="DataAccess\" />
     <Folder Include="uploads\images\" />
+    <Folder Include="wwwroot\prism.js\" />
   </ItemGroup>
 
 </Project>
