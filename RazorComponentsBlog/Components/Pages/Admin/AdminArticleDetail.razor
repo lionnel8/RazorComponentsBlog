@@ -100,7 +100,9 @@
 
     public async Task GenerateImageThumbnail()
     {
+        imageBase64 = null;
         imageThumbnailGenerating = true;
+
         foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
         {
             using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
