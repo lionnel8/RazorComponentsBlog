@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,10 +9,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using RazorComponentsBlog.Components;
+using RazorComponentsBlog.Models;
 using RazorComponentsBlog.Services;
 using Sotsera.Blazor.Toaster.Core.Models;
 
@@ -19,6 +23,14 @@ namespace RazorComponentsBlog
 {
     public class Startup
     {
+
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -37,6 +49,15 @@ namespace RazorComponentsBlog
                 config.NewestOnTop = true;
                 config.MaximumOpacity = 95;
             });
+
+            var builder = new SqlConnectionStringBuilder(
+                Configuration.GetConnectionString("RazorComponentsBlog_db"))
+            { Password = Configuration["DbPassword"] };
+
+            services.AddDbContext<RazorComponentsBlogContext>(options =>
+                options.UseSqlServer(builder.ConnectionString));
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
