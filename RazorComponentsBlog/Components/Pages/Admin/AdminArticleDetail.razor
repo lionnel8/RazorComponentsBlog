@@ -7,7 +7,14 @@
 @using SixLabors.ImageSharp.Processing
 @using SixLabors.ImageSharp.PixelFormats
 @using SixLabors.ImageSharp.Formats.Jpeg
+@using RazorComponentsBlog.Models
+@using RazorComponentsBlog.Services
+@using Microsoft.AspNetCore.Components.Services
+@using System.Text
+@using System.Text.RegularExpressions
 
+@inject ArticleService ArticleService
+@inject IUriHelper UriHelper
 @inject IWebHostEnvironment env;
 @inject IFileReaderService fileReaderService;
 @inject IJSRuntime JSRuntime
@@ -19,7 +26,7 @@
             <h1 class="text-center mt-5 mb-5">Nový článek</h1>
             <div class="form-group mb-5">
                 <label for="articleTitleInput" class="h4">Titulek článku</label>
-                <input type="text" class="form-control" id="articleTitleInput" placeholder="Titulek článku" />
+                <input type="text" class="form-control" id="articleTitleInput" placeholder="Titulek článku" bind="@ArticleTitle" />
             </div>
             <div class="form-group mb-5">
                 <label class="h4">Úvodní obrázek</label>
@@ -45,7 +52,7 @@
             </div>
             <div class="form-group mb-5">
                 <label class="h4">Text článku</label>
-                <textarea><p><strong>fdasfsafdas</strong></p></textarea>
+                <textarea></textarea>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" onclick="@Save">Uložit článek</button>
@@ -58,10 +65,6 @@
                 }
             </div>
 
-            @if (EditorContent != null)
-            {
-                <div>@((MarkupString)EditorContent)</div>
-            }
         </div>
     </div>
 </div>
@@ -69,6 +72,8 @@
 
 
 @functions {
+    private string ArticleTitle { get; set; }
+
     ElementRef FileInput;
 
     public string Output { get; set; }
@@ -85,17 +90,17 @@
     {
         base.OnAfterRender();
         JSRuntime.InvokeAsync<object>("tinymceInterop.init");
-        //JSRuntime.InvokeAsync
     }
 
     public async void Save()
     {
-        //JSRuntime.InvokeAsync<string>("busyloadInterop.show");
         EditorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent");
-        this.StateHasChanged();
-        await JSRuntime.InvokeAsync<string>("tinymceInterop.highlightCode");
+        string url = ToUrlSlug(ArticleTitle);
+        Article article = new Article { Created=DateTime.Now, Title = ArticleTitle, Text = EditorContent, Url=url, UserId=1 };
+        await ArticleService.AddArticle(article);
+        //await JSRuntime.InvokeAsync<string>("tinymceInterop.highlightCode");
         toaster.Success("Článek byl uložen");
-        //JSRuntime.InvokeAsync<string>("busyloadInterop.hide");
+        UriHelper.NavigateTo("/");
     }
 
     public async Task GenerateImageThumbnail()
@@ -155,5 +160,30 @@
         string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
 
         return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+    }
+
+    private static string ToUrlSlug(string value)
+    {
+
+        //First to lower case
+        value = value.ToLowerInvariant();
+
+        //Remove all accents
+        var bytes = Encoding.GetEncoding("Cyrillic").GetBytes(value);
+        value = Encoding.ASCII.GetString(bytes);
+
+        //Replace spaces
+        value = Regex.Replace(value, @"\s", "-", RegexOptions.Compiled);
+
+        //Remove invalid chars
+        value = Regex.Replace(value, @"[^a-z0-9\s-_]", "", RegexOptions.Compiled);
+
+        //Trim dashes from end
+        value = value.Trim('-', '_');
+
+        //Replace double occurences of - or _
+        value = Regex.Replace(value, @"([-_]){2,}", "$1", RegexOptions.Compiled);
+
+        return value;
     }
 }

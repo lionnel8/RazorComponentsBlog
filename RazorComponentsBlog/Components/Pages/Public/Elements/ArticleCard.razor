@@ -1,10 +1,19 @@
-﻿<div class="@(isLarge ? "col-12" : "col-12 col-md-6")">
+﻿@using System.Text.RegularExpressions
+
+<div class="@(isLarge ? "col-12" : "col-12 col-md-6")">
     <div class="article-card shadow-soft mb-5 bg-white rounded @(isLarge ? "article-card--large" : "article-card--small")">
         <a class="d-block" href="@("article/" + ArticleId + "/" + Url)">
             <div class="row">
                 <div class="@DetermineInnerColumnsClass(isLarge)">
                     <div class="article-card-image-box position-relative h-100">
-                        <img src="https://placeimg.com/640/480/arch" class="position-absolute w-100 h-100 rounded" alt="@Title" />
+                        @if (String.IsNullOrEmpty(Image))
+                        {
+                            <img src="images/defaultImg.jpg" class="position-absolute w-100 h-100 rounded" alt="@Title" />
+                        }
+                        else
+                        {
+                            <img src=@("uploads/images/" + Url) class="position-absolute w-100 h-100 rounded" alt="@Title" />
+                        }
                     </div>
                 </div>
                 <div class="@DetermineInnerColumnsClass(isLarge)">
@@ -37,6 +46,9 @@
     private string Url { get; set; }
 
     [Parameter]
+    private string Image { get; set; }
+
+    [Parameter]
     private bool IsFirst { get; set; }
 
     [Parameter]
@@ -55,7 +67,12 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        Text = Text.Substring(0, Math.Min(Text.Length, 300));
+
+        if (!String.IsNullOrEmpty(Text))
+        {
+            Text = Text.Substring(0, Math.Min(Text.Length, 300));
+            Text = Regex.Replace(Text, "<.*?>", String.Empty);
+        }
         isLarge = IsFirst || IsLast ? true : false;
     }
 
@@ -63,7 +80,5 @@
     {
         return isLarge ? "col-12 col-md-6" : "col-12";
     }
-
-
 
 }

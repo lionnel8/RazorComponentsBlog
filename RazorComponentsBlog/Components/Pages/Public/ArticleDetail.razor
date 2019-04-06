@@ -17,10 +17,17 @@
         <div class="row">
             <div class="col-12">
                 <div class="article-detail__image-box">
-                    <img src="https://placeimg.com/1000/500/arch" class="img-fluid mb-5" />
+                    @if (String.IsNullOrEmpty(article.Image))
+                    {
+                        <img src="images/defaultImg.jpg" class="img-fluid mb-5" alt="@article.Title" />
+                    }
+                    else
+                    {
+                        <img src="https://placeimg.com/1000/500/arch" class="img-fluid mb-5" alt="@article.Title" />
+                    }
                 </div>
                 <div class="article-detail__article-text">
-                    @article.Text
+                    @((MarkupString)article.Text)
                 </div>
             </div>
         </div>
