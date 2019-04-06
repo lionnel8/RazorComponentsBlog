@@ -34,10 +34,10 @@
 
 @functions {
 
-    List<Article> articles;
+    List<Article> articles = new List<Article>();
 
     protected override async Task OnInitAsync()
     {
-        articles = await ArticleService.GetArticleList();
+        articles = await ArticleService.GetArticles();
     }
 }

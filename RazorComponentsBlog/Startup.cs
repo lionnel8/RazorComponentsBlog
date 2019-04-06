@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using RazorComponentsBlog.Components;
+using RazorComponentsBlog.Data;
 using RazorComponentsBlog.Models;
 using RazorComponentsBlog.Services;
 using Sotsera.Blazor.Toaster.Core.Models;
@@ -39,7 +40,7 @@ namespace RazorComponentsBlog
                 .AddNewtonsoftJson();
             services.AddRazorComponents();
             services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<ArticleService>();
+            services.AddScoped<ArticleService>();
             services.AddScoped<IFileReaderService, FileReaderService>();
             services.AddDirectoryBrowser();
             services.AddToaster(config =>
@@ -52,11 +53,10 @@ namespace RazorComponentsBlog
 
             var builder = new SqlConnectionStringBuilder(
                 Configuration.GetConnectionString("RazorComponentsBlog_db"))
-            { Password = Configuration["DbPassword"] };
+            { Password = Configuration["RazorComponentsBlogDbPassword"] };
 
-            services.AddDbContext<RazorComponentsBlogContext>(options =>
+            services.AddDbContext<RazorComponentsBlogDbContext>(options =>
                 options.UseSqlServer(builder.ConnectionString));
-
 
         }
 
