@@ -1,0 +1,22 @@
+﻿<div class="col-12">
+    <div class="search-item shadow-soft p-2 mb-3">
+        <a href="@("article/" + ArticleId + "/" + Url)">
+            <h2 class="h5 mb-1">@Title</h2>
+            <p class="search-item__item-date text-dark mb-0">@Created.ToString("dd. MM. yyyy")</p>
+        </a>
+    </div>
+</div>
+
+@functions {
+    [Parameter]
+    public int ArticleId { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public DateTime Created { get; set; }
+
+    [Parameter]
+    public string Url { get; set; }
+}

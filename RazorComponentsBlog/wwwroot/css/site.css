@@ -55,6 +55,11 @@ a {
     margin-top: -80px;
 }
 
+.search-item__item-date {
+    font-size: .95rem;
+    opacity: 0.6;
+}
+
 .bg-indigo {
     background-color: #0026ca !important;
 }
@@ -78,6 +83,86 @@ a {
 .bg-teal-dark {
     background-color: #00b686 !important;
 }
+
+.btn {
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.btn-indigo {
+    background-color: #304ffe !important;
+    border-color: #304ffe !important;
+    color: #fff;
+}
+
+    .btn-indigo:hover {
+        background-color: #0026ca !important;
+        border-color: #0026ca !important;
+        color: #fff;
+    }
+
+
+.btn-indigo-light {
+    background-color: #7a7cff !important;
+    border-color: #7a7cff !important;
+    color: #fff;
+}
+
+    .btn-indigo-light:hover {
+        background-color: #304ffe !important;
+        border-color: #304ffe !important;
+        color: #fff;
+    }
+
+.btn-indigo-dark {
+    background-color: #0026ca !important;
+    border-color: #0026ca !important;
+    color: #fff;
+}
+
+    .btn-indigo-dark:hover {
+        background-color: #0026ca !important;
+        border-color: #0026ca !important;
+        color: #fff;
+    }
+
+.btn-teal {
+    background-color: #1de9b6 !important;
+    border-color: #1de9b6 !important;
+    color: #000;
+}
+
+    .btn-teal:hover {
+        background-color: #00b686 !important;
+        border-color: #00b686 !important;
+        color: #000;
+    }
+
+.btn-teal-light {
+    background-color: #6effe8 !important;
+    border-color: #6effe8 !important;
+    color: #000;
+}
+
+    .btn-teal-light:hover {
+        background-color: #1de9b6 !important;
+        border-color: #1de9b6 !important;
+        color: #000;
+    }
+
+.btn-teal-dark {
+    background-color: #00b686 !important;
+    border-color: #00b686 !important;
+    color: #000;
+}
+
+    .btn-teal-dark:hover {
+        background-color: #00b686 !important;
+        border-color: #00b686 !important;
+        color: #000;
+    }
+
 
 .navbar-indigo .navbar-nav .nav-link {
     color: #ffffff;

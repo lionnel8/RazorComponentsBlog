@@ -1,4 +1,5 @@
 ﻿@page "/admin/article/new"
+@page "/admin/article/{id:int}/{url}"
 
 @using System.IO
 @using Blazor.FileReader
@@ -23,48 +24,46 @@
 <div class="container rcb-container">
     <div class="row">
         <div class="col-12">
-            <h1 class="text-center mt-5 mb-5">Nový článek</h1>
+            <h1 class="text-center mt-5 mb-5">@(article == null ? "Nový článek" : "Editace článku")</h1>
             <div class="form-group mb-5">
                 <label for="articleTitleInput" class="h4">Titulek článku</label>
-                <input type="text" class="form-control" id="articleTitleInput" placeholder="Titulek článku" bind="@ArticleTitle" />
+                <input type="text" class="form-control" id="articleTitleInput" placeholder="Titulek článku" value="@(article == null ? "" : article.Title)" bind="@ArticleTitle" />
             </div>
             <div class="form-group mb-5">
                 <label class="h4">Úvodní obrázek</label>
-                <div class="custom-file">
+                <div class="custom-file mb-3">
                     <input type="file" ref="FileInput" accept="image/*" class="custom-file-input" id="imageFileInput" onchange="@GenerateImageThumbnail" />
                     <label class="custom-file-label" for="imageFileInput">Soubor</label>
                 </div>
-
-                @if (imageThumbnailGenerating)
-                {
-                    <div class="text-center">
+                <div class="text-center">
+                    @if (imageThumbnailGenerating)
+                    {
                         <p>Probíhá generování náhledu obrázku...</p>
-                    </div>
-                }
-
-                @if (imageBase64 != null)
-                {
-                    <div class="text-center">
-                        <img src=@imageBase64 class="img-fluid">
-                    </div>
-                }
-
+                    }
+                    else if (!String.IsNullOrEmpty(imageBase64))
+                    {
+                        <img src=@imageBase64 class="img-fluid" />
+                    }
+                    else if (!String.IsNullOrEmpty(article?.Image))
+                    {
+                        <img src=@("uploads/images/" + article.Image) class="img-fluid" />
+                    }
+                </div>
             </div>
             <div class="form-group mb-5">
                 <label class="h4">Text článku</label>
-                <textarea></textarea>
+                <textarea>@(article == null ? "" : article.Text)</textarea>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary" onclick="@Save">Uložit článek</button>
-            </div>
-            <div>
-                @if (FileName != null)
+                @if (article == null)
                 {
-                    <span>good</span>
-                    <img src=@("uploads/images/" + FileName) />
+                    <button class="btn btn-primary" onclick="@SaveNewArticle">Uložit článek</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary" onclick="@UpdateArticle">Uložit změny</button>
                 }
             </div>
-
         </div>
     </div>
 </div>
@@ -72,13 +71,18 @@
 
 
 @functions {
-    private string ArticleTitle { get; set; }
 
-    ElementRef FileInput;
+    [Parameter]
+    private int Id { get; set; }
+
+    [Parameter]
+    private string Url { get; set; }
+
+    private string ArticleTitle { get; set; }
 
     public string Output { get; set; }
 
-    public string FileName { get; set; }
+    public string ImageName { get; set; }
 
     public string EditorContent { get; set; }
 
@@ -86,19 +90,49 @@
 
     private bool imageThumbnailGenerating = false;
 
+    ElementRef FileInput;
+
+    Article article;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        article = await ArticleService.GetArticleDetail(Id, Url);
+        ArticleTitle = article?.Title;
+    }
+
     protected override void OnAfterRender()
     {
         base.OnAfterRender();
         JSRuntime.InvokeAsync<object>("tinymceInterop.init");
     }
 
-    public async void Save()
+    public async void UpdateArticle()
     {
+        await UploadImage();
         EditorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent");
         string url = ToUrlSlug(ArticleTitle);
-        Article article = new Article { Created=DateTime.Now, Title = ArticleTitle, Text = EditorContent, Url=url, UserId=1 };
+
+        article.Title = ArticleTitle;
+        article.Text = EditorContent;
+        article.Image = ImageName ?? article.Image;
+        article.Url = url;
+
+        await ArticleService.UpdateArticle(article);
+
+        toaster.Success("Změny byly uloženy");
+        UriHelper.NavigateTo("/");
+    }
+
+    public async void SaveNewArticle()
+    {
+        await UploadImage();
+        EditorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent");
+        string url = ToUrlSlug(ArticleTitle);
+
+        Article article = new Article { Created = DateTime.Now, Title = ArticleTitle, Text = EditorContent, Image = ImageName, Url = url, UserId = 1 };
         await ArticleService.AddArticle(article);
-        //await JSRuntime.InvokeAsync<string>("tinymceInterop.highlightCode");
+
         toaster.Success("Článek byl uložen");
         UriHelper.NavigateTo("/");
     }
@@ -128,13 +162,13 @@
         }
     }
 
-    public async Task ReadFile()
+    public async Task UploadImage()
     {
         foreach (var file in await fileReaderService.CreateReference(FileInput).EnumerateFilesAsync())
         {
             var fileInfo = await file.ReadFileInfoAsync();
-            FileName = MakeValidFileName(fileInfo.Name);
-            var uploadPath = Path.Combine(env.WebRootPath, "uploads/images", FileName);
+            ImageName = MakeValidFileName(fileInfo.Name);
+            var uploadPath = Path.Combine(env.WebRootPath, "uploads/images", ImageName);
 
             using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
             using (Image<Rgba32> image = Image.Load(memoryStream))

@@ -1,0 +1,79 @@
+﻿@page "/search"
+@page "/search/{searchString}"
+
+@using RazorComponentsBlog.Services
+@using RazorComponentsBlog.Models
+@using Microsoft.AspNetCore.Components.Services
+
+@inject IUriHelper UriHelper
+@inject ArticleService ArticleService
+
+<div class="mb-5">
+    <TopFrame TopFrameClass="page-no-index" Title="Vyhledávání">
+    </TopFrame>
+</div>
+<div class="container rcb-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group mb-5">
+                <input type="text" class="form-control" id="searchStringInput" placeholder="Vyhledat mezi články" bind-value-oninput="@SearchString" value="@SearchString" />
+                <button onclick="@DoSearch">Vyhledat</button>
+            </div>
+        </div>
+        @if (itemsNotFound)
+        {
+            <div class="col-12">
+                <p class="text-center">Zadanému výrazu neodpovídá žádná položka.</p>
+            </div>
+        }
+
+        @if (articles.Any())
+        {
+            <div class="col-12">
+                <p class="text-center"><strong>Nalezeno @articles.Count článků</strong></p>
+            </div>
+
+            @foreach (var article in articles)
+            {
+                <ArticleSearchItem ArticleId="@article.ArticleId"
+                                   Title="@article.Title"
+                                   Created="@article.Created"
+                                   Url="@article.Url">
+                </ArticleSearchItem>
+            }
+        }
+
+    </div>
+
+
+
+</div>
+
+@functions {
+    [Parameter]
+    public string SearchString { get; set; }
+
+    List<Article> articles = new List<Article>();
+
+    bool itemsNotFound = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        await DoSearch();
+    }
+
+    private async Task DoSearch()
+    {
+
+        if (!String.IsNullOrEmpty(SearchString))
+        {
+            articles = await ArticleService.GetArticles(SearchString);
+            itemsNotFound = articles.Any() ? false : true;
+            UriHelper.NavigateTo("/search/" + SearchString);
+        }
+    }
+
+}
+
+

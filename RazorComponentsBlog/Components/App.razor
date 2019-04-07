@@ -1,3 +1,13 @@
-﻿@addTagHelper *, Sotsera.Blazor.Toaster
+﻿@using Microsoft.AspNetCore.Components.Services
+@inject IJSRuntime JSRuntime
+@addTagHelper *, Sotsera.Blazor.Toaster
 <Router AppAssembly="typeof(Startup).Assembly" FallbackComponent="typeof(Components.Pages.NotFoundPage)" />
 <toastContainer />
+
+@functions {
+    protected override void OnAfterRender()
+    {
+        base.OnAfterRender();
+        JSRuntime.InvokeAsync<object>("tinymceInterop.init");
+    }
+}

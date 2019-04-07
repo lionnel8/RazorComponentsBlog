@@ -18,16 +18,21 @@ namespace RazorComponentsBlog.Services
             this.db = db;
         }
 
-        //public Task<List<Article>> GetArticleList()
-        //{
-        //    var pageList = Articles.ToPagedList();
-        //    var page = pageList.ToPage(2, 6);
+        public async Task<PagedList<Article>> GetPagedArticles()
+        {
+            return await db.Articles.OrderByDescending(a => a.Created).ToPagedListAsync();
+        }
 
-        //    return Task.FromResult(page.ToList());
-        //}
+
         public async Task<List<Article>> GetArticles()
         {
-            return await db.Articles.ToListAsync();
+            return await db.Articles.OrderByDescending(a => a.Created).ToListAsync();
+        }
+
+        public async Task<List<Article>> GetArticles(string searchString)
+        {
+            return await db.Articles.Where(a => a.Text.Contains(searchString) || a.Title.Contains(searchString))
+                .OrderByDescending(a => a.Created).ToListAsync();
         }
 
         public async Task<Article> GetArticleDetail(int id, string url)

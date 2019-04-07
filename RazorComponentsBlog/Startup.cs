@@ -27,9 +27,12 @@ namespace RazorComponentsBlog
 
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment Env { get;  }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,7 +42,6 @@ namespace RazorComponentsBlog
             services.AddMvc()
                 .AddNewtonsoftJson();
             services.AddRazorComponents();
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<ArticleService>();
             services.AddScoped<IFileReaderService, FileReaderService>();
             services.AddDirectoryBrowser();
@@ -51,9 +53,18 @@ namespace RazorComponentsBlog
                 config.MaximumOpacity = 95;
             });
 
-            var builder = new SqlConnectionStringBuilder(
-                Configuration.GetConnectionString("RazorComponentsBlog_db"))
-            { Password = Configuration["RazorComponentsBlogDbPassword"] };
+            SqlConnectionStringBuilder builder;
+            if (Env.IsDevelopment())
+            {
+                builder = new SqlConnectionStringBuilder(
+                        Configuration.GetConnectionString("RazorComponentsBlog_db"))
+                    { Password = Configuration["RazorComponentsBlogDbPassword"] };
+            }
+            else
+            {
+                builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("RazorComponentsBlog_db"));
+            }
+
 
             services.AddDbContext<RazorComponentsBlogDbContext>(options =>
                 options.UseSqlServer(builder.ConnectionString));
@@ -61,9 +72,9 @@ namespace RazorComponentsBlog
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
