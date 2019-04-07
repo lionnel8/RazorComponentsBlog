@@ -87,10 +87,8 @@
         {
             UriHelper.NavigateTo("/page/" + pageIndex.ToString());
         }
-      
+
         PageIndex = pageIndex;
         this.StateHasChanged();
-        //await JSRuntime.InvokeAsync<string>("smoothScrollInterop.scrollTo", "#articleContainer");
-      
     }
 }
