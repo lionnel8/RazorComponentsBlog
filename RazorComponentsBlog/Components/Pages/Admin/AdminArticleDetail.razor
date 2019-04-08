@@ -54,14 +54,14 @@
                 <label class="h4">Text článku</label>
                 <textarea>@(article == null ? "" : article.Text)</textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group text-center">
                 @if (article == null)
                 {
-                    <button class="btn btn-teal btn-lg" onclick="@SaveNewArticle">Uložit článek</button>
+                    <button class="btn btn-teal btn-lg" onclick="@SaveNewArticle">Uložit článek<i class="far fa-save ml-2"></i></button>
                 }
                 else
                 {
-                    <button class="btn btn-teal btn-lg" onclick="@UpdateArticle">Uložit změny</button>
+                    <button class="btn btn-teal btn-lg" onclick="@UpdateArticle">Uložit změny<i class="far fa-save ml-2"></i></button>
                 }
             </div>
         </div>

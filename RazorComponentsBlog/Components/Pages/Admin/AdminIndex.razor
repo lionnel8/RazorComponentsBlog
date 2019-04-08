@@ -14,6 +14,7 @@
     <div class="row">
         <div class="col-12">
             <h1 class="text-center mt-5 mb-5">Seznam článků</h1>
+            <a href="/admin/article/new" class="btn btn-teal mb-4">Přidat nový článek<i class="fas fa-plus ml-2"></i></a>
         </div>
 
         @if (!displayedArticles.Any())
@@ -29,7 +30,8 @@
                 <AdminArticleItem ArticleId="@article.ArticleId"
                                   Title="@article.Title"
                                   Created="@article.Created"
-                                  Url="@article.Url">
+                                  Url="@article.Url"
+                                  OnArticleDelete="@OnArticleDelete">
                 </AdminArticleItem>
             }
         }
@@ -48,11 +50,11 @@
 @functions {
 
     [Parameter]
-    private int PageIndex { get; set; }
+    public int PageIndex { get; set; }
 
-    PagedList<Article> articles = new PagedList<Article>();
+    private PagedList<Article> articles = new PagedList<Article>();
 
-    List<Article> displayedArticles = new List<Article>();
+    private List<Article> displayedArticles = new List<Article>();
 
     private int pageSize = 10;
 
@@ -84,6 +86,13 @@
         }
 
         PageIndex = pageIndex;
+        this.StateHasChanged();
+    }
+
+    private async void OnArticleDelete()
+    {
+        articles = await ArticleService.GetPagedArticles();
+        displayedArticles = articles.GetPage(PageIndex).ToList();
         this.StateHasChanged();
     }
 }

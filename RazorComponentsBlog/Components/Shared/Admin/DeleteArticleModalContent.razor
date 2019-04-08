@@ -1,0 +1,40 @@
+﻿@using RazorComponentsBlog.Services
+@inject ArticleService  ArticleService
+@inject IModalService Modal
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+
+<div class="delete-modal-content mb-4">
+    <span>Opravdu si přejete smazat článek <strong>@title</strong>?</span>
+</div>
+<div class="delete-modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-secondary mr-1" onclick="@CloseModal">Zrušit</button>
+    <button type="button" class="btn btn-danger" onclick="@DeleteArticle">Smazat článek</button>
+</div>
+
+@functions {
+    [CascadingParameter]
+    ModalParameters Parameters { get; set; }
+
+    private int articleId;
+    private string title;
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        articleId = Parameters.Get<int>("ArticleId");
+        title = Parameters.Get<string>("Title");
+    }
+
+    private async Task DeleteArticle()
+    {
+        await ArticleService.DeleteArticle(articleId);
+        Modal.Close();
+        Toaster.Success("Článek byl smazán");
+
+    }
+
+    private void CloseModal()
+    {
+        Modal.Close();
+    }
+}

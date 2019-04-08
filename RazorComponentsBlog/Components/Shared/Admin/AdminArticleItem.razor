@@ -1,4 +1,6 @@
-﻿<div class="col-12">
+﻿@inject IModalService Modal
+
+<div class="col-12">
     <div class="admin-article-item shadow-soft mb-3">
         <div class="row p-2">
             <div class="col-12 col-sm-6">
@@ -10,7 +12,7 @@
             <div class="col-12 col-sm-6 text-right mt-4">
                 <a href="@("article/" + ArticleId + "/" + Url)" class="btn btn-teal btn-sm mb-1">Zobrazit<i class="far fa-eye ml-2"></i></a>
                 <a href="@("admin/article/" + ArticleId + "/" + Url)" class="btn btn-teal btn-sm mb-1">Editovat<i class="far fa-edit ml-2"></i></a>
-                <div class="btn btn-danger btn-sm mb-1">Smazat<i class="far fa-trash-alt ml-2 mb-1"></i></div>
+                <button class="btn btn-danger btn-sm mb-1" onclick="@ShowDeleteArticleModal">Smazat<i class="far fa-trash-alt ml-2 mb-1"></i></button>
             </div>
         </div>
     </div>
@@ -28,4 +30,23 @@
 
     [Parameter]
     public string Url { get; set; }
+
+    [Parameter]
+    public Action OnArticleDelete { get; set; }
+
+    private void ShowDeleteArticleModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("ArticleId", ArticleId);
+        parameters.Add("Title", Title);
+
+        Modal.OnClose += DeleteArticleModalClosed;
+        Modal.Show("Smazání článku", typeof(DeleteArticleModalContent), parameters);
+    }
+
+    private void DeleteArticleModalClosed()
+    {
+        OnArticleDelete();
+        Modal.OnClose -= DeleteArticleModalClosed;
+    }
 }
