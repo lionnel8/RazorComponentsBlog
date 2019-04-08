@@ -31,6 +31,7 @@
                                   Title="@article.Title"
                                   Created="@article.Created"
                                   Url="@article.Url"
+                                  Article="@article"
                                   OnArticleDelete="@OnArticleDelete">
                 </AdminArticleItem>
             }
@@ -74,7 +75,7 @@
         displayedArticles = articles.GetPage(PageIndex).ToList();
     }
 
-    private async void ChangePage(int pageIndex)
+    private void ChangePage(int pageIndex)
     {
         if (pageIndex == 1)
         {
@@ -89,9 +90,9 @@
         this.StateHasChanged();
     }
 
-    private async void OnArticleDelete()
+    private void OnArticleDelete(Article article)
     {
-        articles = await ArticleService.GetPagedArticles();
+        articles.Remove(article);
         displayedArticles = articles.GetPage(PageIndex).ToList();
         this.StateHasChanged();
     }
