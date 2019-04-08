@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.Services
 @using RazorComponentsBlog.Services
 @inject IUriHelper UriHelper
+@inject IJSRuntime JSRuntime
 @inject ArticleService ArticleService
 @inject Sotsera.Blazor.Toaster.IToaster toaster
 
@@ -54,6 +55,12 @@
             UriHelper.NavigateTo("/page-not-found");
         }
 
+    }
+
+    protected override void OnAfterRender()
+    {
+        base.OnAfterRender();
+        JSRuntime.InvokeAsync<object>("tinymceInterop.highlightCode");
     }
 
 

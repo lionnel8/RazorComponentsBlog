@@ -16,8 +16,14 @@
     <div class="row">
         <div class="col-12">
             <div class="form-group mb-5">
-                <input type="text" class="form-control" id="searchStringInput" placeholder="Vyhledat mezi články" bind-value-oninput="@SearchString" value="@SearchString" />
-                <button onclick="@DoSearch">Vyhledat</button>
+                <div class="row">
+                    <div class="col-12 col-sm-auto flex-grow-1 mb-2">
+                        <input type="text" class="form-control" id="searchStringInput" placeholder="Vyhledat mezi články" bind-value-oninput="@SearchString" value="@SearchString" />
+                    </div>
+                    <div class="col-12 col-sm-auto">
+                        <button class="btn btn-teal btn-block" onclick="@DoSearch">Vyhledat<i class="fas fa-search ml-2"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
         @if (itemsNotFound)
