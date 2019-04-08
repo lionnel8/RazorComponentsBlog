@@ -16,19 +16,19 @@
 
 @functions {
     [Parameter]
-    private int PageCount { get; set; }
+    public int PageCount { get; set; }
 
     [Parameter]
-    private int CurrentPage { get; set; }
+    public int CurrentPage { get; set; }
 
     [Parameter]
-    private bool HasNextPage { get; set; }
+    public bool HasNextPage { get; set; }
 
     [Parameter]
-    private bool HasPreviousPage { get; set; }
+    public bool HasPreviousPage { get; set; }
 
     [Parameter]
-    private Action<int> OnPageChanged { get; set; }
+    public Action<int> OnPageChanged { get; set; }
 
     private void ChangePage(int pageIndex)
     {

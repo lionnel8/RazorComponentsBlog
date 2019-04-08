@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RazorComponentsBlog.Models;
 using Gobln.Pager;
 using Microsoft.EntityFrameworkCore;
 using RazorComponentsBlog.Data;
+using RazorComponentsBlog.Models;
 
 namespace RazorComponentsBlog.Services
 {
@@ -54,10 +53,9 @@ namespace RazorComponentsBlog.Services
 
         public async Task DeleteArticle(int id)
         {
-            Article article = await db.Articles.FindAsync(id);
+            var article = await db.Articles.FindAsync(id);
             db.Articles.Remove(article);
             await db.SaveChangesAsync();
         }
-
     }
 }

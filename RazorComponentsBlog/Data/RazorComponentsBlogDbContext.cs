@@ -7,12 +7,9 @@ namespace RazorComponentsBlog.Data
     {
         public RazorComponentsBlogDbContext(DbContextOptions<RazorComponentsBlogDbContext> options) : base(options)
         {
-
         }
 
         public DbSet<Article> Articles { get; set; }
         public DbSet<User> Users { get; set; }
-
-
     }
 }

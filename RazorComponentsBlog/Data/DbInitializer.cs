@@ -17,27 +17,27 @@ namespace RazorComponentsBlog.Data
             {
                 return;
             }
-            User User = new User { FirstName = "Václav", LastName = "Novák", Email = "vaclav@novak.com" };
-            db.Users.Add(User);
+            User user = new User { FirstName = "Václav", LastName = "Novák", Email = "vaclav@novak.com" };
+            db.Users.Add(user);
             db.SaveChanges();
 
-            string Title = "Sed convallis magna eu sem";
-            string Text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean fermentum risus id tortor. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Mauris dictum facilisis augue. In rutrum. Vivamus luctus egestas leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque sapien. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.";
-            List<Article> Articles = new List<Article>()
+            string title = "Sed convallis magna eu sem";
+            string text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean fermentum risus id tortor. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Mauris dictum facilisis augue. In rutrum. Vivamus luctus egestas leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque sapien. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.";
+            List<Article> articles = new List<Article>()
         {
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-1", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-2", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-3", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-4", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-5", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-6", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-7", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-8", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-9", User=User},
-            new Article{ Created=DateTime.Now, Title=Title, Text=Text, Url="nadpis-clanku-10", User=User},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-1", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-2", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-3", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-4", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-5", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-6", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-7", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-8", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-9", User=user},
+            new Article{ Created=DateTime.Now, Title=title, Text=text, Url="nadpis-clanku-10", User=user},
         };
 
-            foreach (Article article in Articles)
+            foreach (Article article in articles)
             {
                 db.Articles.Add(article);
             }
