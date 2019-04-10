@@ -17,7 +17,7 @@
     <div class="container rcb-container" id="articleDetailContent">
         <div class="row">
             <div class="col-12">
-                <div class="article-detail__image-box">
+                <div class="article-detail__image-box text-center">
                     @if (String.IsNullOrEmpty(article.Image))
                     {
                         <img src="images/defaultImg.jpg" class="img-fluid mb-5" alt="@article.Title" />
@@ -47,7 +47,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await base.OnParametersSetAsync();
         article = await ArticleService.GetArticleDetail(Id, Url);
 
         if (article == null)
@@ -59,7 +58,6 @@
 
     protected override void OnAfterRender()
     {
-        base.OnAfterRender();
         JSRuntime.InvokeAsync<object>("tinymceInterop.highlightCode");
     }
 

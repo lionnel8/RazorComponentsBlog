@@ -17,7 +17,7 @@ namespace RazorComponentsBlog.Data
             {
                 return;
             }
-            User user = new User { FirstName = "Václav", LastName = "Novák", Email = "vaclav@novak.com" };
+            User user = new User { FirstName = "Jan", LastName = "Budař", Email = "honza.budar@gmail.com" };
             db.Users.Add(user);
             db.SaveChanges();
 

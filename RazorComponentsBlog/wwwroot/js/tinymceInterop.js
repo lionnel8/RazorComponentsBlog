@@ -14,6 +14,9 @@
             toolbar: "codesample"
         });
     },
+    remove: function () {
+        tinymce.remove();
+    },
     getContent: function () {
         return tinymce.activeEditor.getContent();
     },

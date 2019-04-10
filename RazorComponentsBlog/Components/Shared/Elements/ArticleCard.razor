@@ -1,4 +1,5 @@
 ﻿@using System.Text.RegularExpressions
+@using HtmlAgilityPack
 
 <div class="@(isLarge ? "col-12" : "col-12 col-md-6")">
     <div class="article-card shadow-soft mb-5 bg-white rounded @(isLarge ? "article-card--large" : "article-card--small")">
@@ -20,7 +21,7 @@
                     <div class="p-3">
                         <h2 class="h4 mt-3 mb-1">@Title</h2>
                         <p class="article-card__article-date text-dark mb-4">@Created.ToString("dd. MM. yyyy")</p>
-                        <p class="article-card__article-preview-text"> @((MarkupString)Text)</p>
+                        <p class="article-card__article-preview-text">@((MarkupString)Text)</p>
                     </div>
                 </div>
             </div>
@@ -31,47 +32,38 @@
 @functions {
 
     [Parameter]
-    private int ArticleId { get; set; }
+    public int ArticleId { get; set; }
 
     [Parameter]
-    private string Title { get; set; }
+    public string Title { get; set; }
 
     [Parameter]
-    private string Text { get; set; }
+    public string Text { get; set; }
 
     [Parameter]
-    private DateTime Created { get; set; }
+    public DateTime Created { get; set; }
 
     [Parameter]
-    private string Url { get; set; }
+    public string Url { get; set; }
 
     [Parameter]
-    private string Image { get; set; }
+    public string Image { get; set; }
 
     [Parameter]
-    private bool IsFirst { get; set; }
+    public bool IsFirst { get; set; }
 
     [Parameter]
-    private bool IsLast { get; set; }
+    public bool IsLast { get; set; }
 
     private bool isLarge;
 
-    private static Random random = new Random();
-    public static string RandomString(int length)
-    {
-        const string chars = "abcd ";
-        return new string(Enumerable.Repeat(chars, length)
-          .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
-
     protected override void OnParametersSet()
     {
-        base.OnParametersSet();
-
         if (!String.IsNullOrEmpty(Text))
         {
-            Text = Text.Substring(0, Math.Min(Text.Length, 300));
             Text = Regex.Replace(Text, "<.*?>", String.Empty);
+            Text = HtmlEntity.DeEntitize(Text);
+            Text = Text.Substring(0, Math.Min(Text.Length, 300));
         }
         isLarge = IsFirst || IsLast ? true : false;
     }

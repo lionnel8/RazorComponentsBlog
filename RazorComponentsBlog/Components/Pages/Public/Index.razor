@@ -1,5 +1,5 @@
 ﻿@page "/"
-@page "/page/{pageIndex:int}"
+@page "/page/{pagen:int}"
 
 @using RazorComponentsBlog.Models
 @using RazorComponentsBlog.Services
@@ -53,7 +53,7 @@
 @functions {
 
     [Parameter]
-    private int PageIndex { get; set; }
+    public int PageIndex { get; set; }
 
     PagedList<Article> articles = new PagedList<Article>();
 
@@ -77,7 +77,7 @@
         displayedArticles = articles.GetPage(PageIndex).ToList();
     }
 
-    private async void ChangePage(int pageIndex)
+    private void ChangePage(int pageIndex)
     {
         if (pageIndex == 1)
         {

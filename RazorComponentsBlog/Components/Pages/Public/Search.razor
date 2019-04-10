@@ -4,6 +4,7 @@
 @using RazorComponentsBlog.Services
 @using RazorComponentsBlog.Models
 @using Microsoft.AspNetCore.Components.Services
+@using System.Net
 
 @inject IUriHelper UriHelper
 @inject ArticleService ArticleService
@@ -18,7 +19,7 @@
             <div class="form-group mb-5">
                 <div class="row">
                     <div class="col-12 col-sm-auto flex-grow-1 mb-2">
-                        <input type="text" class="form-control" id="searchStringInput" placeholder="Vyhledat mezi články" bind-value-oninput="@SearchString" value="@SearchString" />
+                        <input type="text" class="form-control" id="searchStringInput" placeholder="Vyhledat mezi články" bind="@SearchString" value="@SearchString" />
                     </div>
                     <div class="col-12 col-sm-auto">
                         <button class="btn btn-teal btn-block" onclick="@DoSearch">Vyhledat<i class="fas fa-search ml-2"></i></button>
@@ -53,6 +54,7 @@
 </div>
 
 @functions {
+
     [Parameter]
     public string SearchString { get; set; }
 
@@ -62,7 +64,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await base.OnParametersSetAsync();
+        SearchString = WebUtility.UrlDecode(SearchString);
         await DoSearch();
     }
 
@@ -73,7 +75,7 @@
         {
             articles = await ArticleService.GetArticles(SearchString);
             itemsNotFound = articles.Any() ? false : true;
-            UriHelper.NavigateTo("/search/" + SearchString);
+            UriHelper.NavigateTo("/search/" + WebUtility.UrlEncode(SearchString));
         }
     }
 
