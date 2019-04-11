@@ -52,7 +52,7 @@
             </div>
             <div class="form-group mb-5">
                 <label class="h4">Text článku</label>
-                <textarea>@(article == null ? "" : article.Text)</textarea>
+                <textarea id="textEditor">@(article == null ? "" : article.Text)</textarea>
             </div>
             <div class="form-group text-center">
                 @if (article == null)
@@ -90,6 +90,8 @@
 
     private bool imageThumbnailGenerating = false;
 
+    private bool isFirstRender = true;
+
     private Article article;
 
     protected override async Task OnParametersSetAsync()
@@ -100,8 +102,12 @@
 
     protected override async Task OnAfterRenderAsync()
     {
-        await JSRuntime.InvokeAsync<object>("tinymceInterop.remove");
-        await JSRuntime.InvokeAsync<object>("tinymceInterop.init");
+        if (isFirstRender && (article != null || (article == null && Id == 0)))
+        {
+            isFirstRender = false;
+            await JSRuntime.InvokeAsync<object>("tinymceInterop.remove");
+            await JSRuntime.InvokeAsync<object>("tinymceInterop.init");       
+        }
     }
 
     public async void UpdateArticle()
@@ -113,7 +119,7 @@
         }
 
         await UploadImage();
-        editorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent");
+        editorContent = await JSRuntime.InvokeAsync<string>("tinymceInterop.getContent", "textEditor");
 
         article.Title = articleTitle;
         article.Text = editorContent;
@@ -123,7 +129,7 @@
         await ArticleService.UpdateArticle(article);
 
         toaster.Success("Změny byly uloženy");
-        UriHelper.NavigateTo("/");
+        UriHelper.NavigateTo("/admin");
     }
 
     public async void SaveNewArticle()
