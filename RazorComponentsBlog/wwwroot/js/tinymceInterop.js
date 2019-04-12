@@ -19,7 +19,7 @@
     },
     getContent: function (editorId = null) {
         if (editorId) {
-	        return tinymce.get(editorId).getContent();
+            return tinymce.get(editorId).getContent();
         }
         return tinymce.activeEditor.getContent();
     },

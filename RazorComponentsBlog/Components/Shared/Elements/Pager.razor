@@ -8,11 +8,10 @@
         <span>Stránka @CurrentPage z @PageCount</span>
         @if (HasNextPage)
         {
-            <button onclick="@(() => ChangePage(++CurrentPage))" class="btn btn-teal">Starší <i class="fas fa-arrow-right ml-2"></i></button>
+            <button onclick="@(() => ChangePage(++CurrentPage))" class="btn btn-teal">Starší<i class="fas fa-arrow-right ml-2"></i></button>
         }
     </div>
 }
-
 
 @functions {
     [Parameter]
