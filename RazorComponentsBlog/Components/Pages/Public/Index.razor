@@ -69,11 +69,10 @@
 
     protected override void OnParametersSet()
     {
-        base.OnParametersSetAsync();
-        if (PageIndex == 0)
+        if (PageIndex < 1 || PageIndex > articles.PageCount)
         {
             PageIndex = 1;
-        }
+        }        
         displayedArticles = articles.GetPage(PageIndex).ToList();
     }
 

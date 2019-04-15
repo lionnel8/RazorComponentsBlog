@@ -3,7 +3,7 @@
         tinymce.init({
             selector: 'textarea',
             height: 500,
-            plugins: 'codesample code',
+            plugins: 'codesample code lists autolink emoticons insertdatetime link',
             codesample_languages: [
                 { text: 'C#', value: 'csharp' },
                 { text: 'HTML', value: 'markup' },
@@ -11,7 +11,7 @@
                 { text: 'JavaScript', value: 'javascript' },
                 { text: 'WebAssembly', value: 'wasm' },
             ],
-            toolbar: "codesample"
+            toolbar: "codesample numlist bullist emoticons nonbreaking link"
         });
     },
     remove: function () {

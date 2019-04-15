@@ -35,7 +35,7 @@ a {
 }
 
 .shadow-soft {
-    box-shadow: 0.8rem 1.4rem 3.8rem rgba(39,44,49,.06), 1px 3px 8px rgba(39,44,49,.03);
+    box-shadow: 0 20px 40px 15px rgba(40,45,50,.05), 0 5px 10px rgba(40,45,50,.02);
 }
 
 .article-card .article-card-image-box {
